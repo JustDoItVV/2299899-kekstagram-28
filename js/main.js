@@ -1,2 +1,1 @@
-import './data.js';
-import './functions.js';
+import './miniatures.js';
