@@ -12,6 +12,9 @@ photoDescriptions.forEach((photoDescription) => {
     photoDescription.likes;
   miniature.querySelector('.picture__comments').textContent =
     photoDescription.comments.length;
+  miniature
+    .querySelector('.picture')
+    .setAttribute('data-photo-id', photoDescription.id);
 
   miniaturesFragment.appendChild(miniature);
 });
