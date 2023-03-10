@@ -20,6 +20,14 @@ const bigPictureCommentsCounter = bigPictureSection.querySelector(
 const bigPictureCommentsLoader =
   bigPictureSection.querySelector('.comments-loader');
 
+const onDocumentKeydownEsc = (evt) => {
+  if (isEscapeKey(evt)) {
+    evt.preventDefault();
+    bigPictureSection.classList.add('hidden');
+    document.body.classList.remove('modal-open');
+  }
+};
+
 const openBigPicture = (miniature) => {
   document.body.classList.add('modal-open');
   bigPictureSection.classList.remove('hidden');
@@ -53,25 +61,23 @@ const openBigPicture = (miniature) => {
     `
     )
   );
+
+  document.addEventListener('keydown', onDocumentKeydownEsc, { once: true });
 };
 
 const closeBigPicture = () => {
   bigPictureSection.classList.add('hidden');
   document.body.classList.remove('modal-open');
+
+  document.removeEventListener('keydown', onDocumentKeydownEsc);
 };
 
 miniaturesElement.addEventListener('click', (evt) => {
-  if (evt.target.closest('.picture')) {
+  const miniature = evt.target.closest('.picture');
+  if (miniature) {
     evt.preventDefault();
-    const miniature = evt.target.closest('.picture');
     openBigPicture(miniature);
   }
 });
 
 bigPictureClose.addEventListener('click', closeBigPicture);
-
-document.addEventListener('keydown', (evt) => {
-  if (isEscapeKey(evt)) {
-    closeBigPicture();
-  }
-});
