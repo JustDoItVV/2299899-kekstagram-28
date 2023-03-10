@@ -20,29 +20,27 @@ const bigPictureCommentsCounter = bigPictureSection.querySelector(
 const bigPictureCommentsLoader =
   bigPictureSection.querySelector('.comments-loader');
 
-miniaturesElement.addEventListener('click', (evt) => {
-  if (evt.target.closest('.picture')) {
-    evt.preventDefault();
-    document.body.classList.add('modal-open');
+const openBigPicture = (miniature) => {
+  document.body.classList.add('modal-open');
+  bigPictureSection.classList.remove('hidden');
+  bigPictureCommentsCounter.classList.add('hidden');
+  bigPictureCommentsLoader.classList.add('hidden');
 
-    bigPictureSection.classList.remove('hidden');
-    bigPictureCommentsCounter.classList.add('hidden');
-    bigPictureCommentsLoader.classList.add('hidden');
+  const pictureId = miniature.getAttribute('data-photo-id');
+  const pictureData = photoDescriptions.find(
+    // eslint-disable-next-line eqeqeq
+    (element) => element.id == pictureId
+  );
 
-    const miniature = evt.target.closest('.picture');
-    const pictureId = miniature.getAttribute('data-photo-id');
-    const pictureData = photoDescriptions.find(
-      // eslint-disable-next-line eqeqeq
-      (element) => element.id == pictureId
-    );
-
-    bigPictureImage.src = pictureData.url;
-    bigPictureLikesCount.textContent = pictureData.likes;
-    bigPictureCommentsCount.textContent = pictureData.comments.length;
-    bigPictureDescription.textContent = pictureData.description;
-    bigPictureCommentsSection.innerHTML = '';
-    pictureData.comments.forEach((comment) => {
-      const commentTemplate = `
+  bigPictureImage.src = pictureData.url;
+  bigPictureLikesCount.textContent = pictureData.likes;
+  bigPictureCommentsCount.textContent = pictureData.comments.length;
+  bigPictureDescription.textContent = pictureData.description;
+  bigPictureCommentsSection.innerHTML = '';
+  pictureData.comments.forEach((comment) =>
+    bigPictureCommentsSection.insertAdjacentHTML(
+      'beforeend',
+      `
       <li class="social__comment">
         <img
           class="social__picture"
@@ -50,26 +48,30 @@ miniaturesElement.addEventListener('click', (evt) => {
           alt="${comment.name}"
           width="35" height="35"
         >
-      <p class="social__text">${comment.message}</p>
+        <p class="social__text">${comment.message}</p>
       </li>
-      `;
-      bigPictureCommentsSection.insertAdjacentHTML(
-        'beforeend',
-        commentTemplate
-      );
-    });
-  }
-});
+    `
+    )
+  );
+};
 
-document.addEventListener('keydown', (evt) => {
-  if (isEscapeKey) {
-    evt.preventDefault();
-    bigPictureSection.classList.add('hidden');
-    document.body.classList.remove('modal-open');
-  }
-});
-
-bigPictureClose.addEventListener('click', () => {
+const closeBigPicture = () => {
   bigPictureSection.classList.add('hidden');
   document.body.classList.remove('modal-open');
+};
+
+miniaturesElement.addEventListener('click', (evt) => {
+  if (evt.target.closest('.picture')) {
+    evt.preventDefault();
+    const miniature = evt.target.closest('.picture');
+    openBigPicture(miniature);
+  }
+});
+
+bigPictureClose.addEventListener('click', closeBigPicture);
+
+document.addEventListener('keydown', () => {
+  if (isEscapeKey) {
+    closeBigPicture();
+  }
 });
