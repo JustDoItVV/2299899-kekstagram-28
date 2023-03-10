@@ -70,8 +70,8 @@ miniaturesElement.addEventListener('click', (evt) => {
 
 bigPictureClose.addEventListener('click', closeBigPicture);
 
-document.addEventListener('keydown', () => {
-  if (isEscapeKey) {
+document.addEventListener('keydown', (evt) => {
+  if (isEscapeKey(evt)) {
     closeBigPicture();
   }
 });
