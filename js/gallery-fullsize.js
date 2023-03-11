@@ -1,7 +1,7 @@
 import { photoDescriptions } from './data.js';
 import { isEscapeKey } from './util.js';
 
-const miniaturesElement = document.querySelector('.pictures');
+const thumbnailsElement = document.querySelector('.pictures');
 const bigPictureSection = document.querySelector('.big-picture');
 const bigPictureClose = bigPictureSection.querySelector('.big-picture__cancel');
 const bigPictureImage = bigPictureSection.querySelector(
@@ -27,13 +27,13 @@ const onDocumentKeydownEsc = (evt) => {
   }
 };
 
-const openBigPicture = (miniature) => {
+const openBigPicture = (thumbnail) => {
   document.body.classList.add('modal-open');
   bigPictureSection.classList.remove('hidden');
   bigPictureCommentsCounter.classList.add('hidden');
   bigPictureCommentsLoader.classList.add('hidden');
 
-  const pictureId = miniature.getAttribute('data-photo-id');
+  const pictureId = thumbnail.getAttribute('data-photo-id');
   const pictureData = photoDescriptions.find(
     // eslint-disable-next-line eqeqeq
     (element) => element.id == pictureId
@@ -71,11 +71,11 @@ const closeBigPicture = () => {
   document.removeEventListener('keydown', onDocumentKeydownEsc);
 };
 
-miniaturesElement.addEventListener('click', (evt) => {
-  const miniature = evt.target.closest('.picture');
-  if (miniature) {
+thumbnailsElement.addEventListener('click', (evt) => {
+  const thumbnail = evt.target.closest('.picture');
+  if (thumbnail) {
     evt.preventDefault();
-    openBigPicture(miniature);
+    openBigPicture(thumbnail);
   }
 });
 
