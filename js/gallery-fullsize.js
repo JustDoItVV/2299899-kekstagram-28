@@ -23,8 +23,7 @@ const bigPictureCommentsLoader =
 const onDocumentKeydownEsc = (evt) => {
   if (isEscapeKey(evt)) {
     evt.preventDefault();
-    bigPictureSection.classList.add('hidden');
-    document.body.classList.remove('modal-open');
+    bigPictureClose.click();
   }
 };
 
@@ -62,7 +61,7 @@ const openBigPicture = (miniature) => {
     )
   );
 
-  document.addEventListener('keydown', onDocumentKeydownEsc, { once: true });
+  document.addEventListener('keydown', onDocumentKeydownEsc);
 };
 
 const closeBigPicture = () => {
