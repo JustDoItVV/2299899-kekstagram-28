@@ -65,7 +65,7 @@ const createComment = () => ({
 const createPhotoDescription = () => {
   const photoId = generatePhotoDescriptionId();
   const commentArray = Array.from(
-    { length: getRandomInteger(1, 3) },
+    { length: getRandomInteger(1, 6) },
     createComment
   );
   return {
