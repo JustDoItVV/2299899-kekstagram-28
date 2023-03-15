@@ -8,8 +8,6 @@ const bigPictureImage = bigPictureSection.querySelector(
   '.big-picture__img > img'
 );
 const bigPictureLikesCount = bigPictureSection.querySelector('.likes-count');
-const bigPictureCommentsCount =
-  bigPictureSection.querySelector('.comments-count');
 const bigPictureDescription =
   bigPictureSection.querySelector('.social__caption');
 const bigPictureCommentsSection =
@@ -27,11 +25,31 @@ const onDocumentKeydownEsc = (evt) => {
   }
 };
 
+const onButtonLoadMoreClick = () => {
+  let currentComment = bigPictureCommentsSection.querySelector('.hidden');
+  let currentCommentNumber = parseInt(
+    bigPictureCommentsCounter.querySelector('span').textContent,
+    10
+  );
+  for (let i = 1; i <= 5; i++) {
+    currentComment.classList.remove('hidden');
+    currentComment = bigPictureCommentsSection.querySelector('.hidden');
+
+    const counterSpan = bigPictureCommentsCounter.querySelector('span');
+    currentCommentNumber += 1;
+    counterSpan.textContent = currentCommentNumber;
+
+    if (!currentComment) {
+      bigPictureCommentsLoader.classList.add('hidden');
+      break;
+    }
+  }
+};
+
 const openBigPicture = (thumbnail) => {
   document.body.classList.add('modal-open');
   bigPictureSection.classList.remove('hidden');
-  bigPictureCommentsCounter.classList.add('hidden');
-  bigPictureCommentsLoader.classList.add('hidden');
+  bigPictureCommentsLoader.classList.remove('hidden');
 
   const pictureId = thumbnail.getAttribute('data-photo-id');
   const pictureData = photoDescriptions.find(
@@ -41,25 +59,37 @@ const openBigPicture = (thumbnail) => {
 
   bigPictureImage.src = pictureData.url;
   bigPictureLikesCount.textContent = pictureData.likes;
-  bigPictureCommentsCount.textContent = pictureData.comments.length;
   bigPictureDescription.textContent = pictureData.description;
   bigPictureCommentsSection.innerHTML = '';
-  pictureData.comments.forEach((comment) =>
-    bigPictureCommentsSection.insertAdjacentHTML(
-      'beforeend',
+  const commentsAmount = pictureData.comments.length;
+  if (commentsAmount !== 0) {
+    bigPictureCommentsCounter.innerHTML = `
+      <span>0</span>
+      из
+      <span class="comments-count">${commentsAmount}</span>
+      комментариев`;
+    pictureData.comments.forEach((comment) =>
+      bigPictureCommentsSection.insertAdjacentHTML(
+        'beforeend',
+        `
+        <li class="social__comment hidden">
+          <img
+            class="social__picture"
+            src="${comment.avatar}"
+            alt="${comment.name}"
+            width="35" height="35"
+          >
+          <p class="social__text">${comment.message}</p>
+        </li>
       `
-      <li class="social__comment">
-        <img
-          class="social__picture"
-          src="${comment.avatar}"
-          alt="${comment.name}"
-          width="35" height="35"
-        >
-        <p class="social__text">${comment.message}</p>
-      </li>
-    `
-    )
-  );
+      )
+    );
+    bigPictureCommentsLoader.addEventListener('click', onButtonLoadMoreClick);
+    bigPictureCommentsLoader.click();
+  } else {
+    bigPictureCommentsCounter.innerHTML = 'Нет комментариев';
+    bigPictureCommentsLoader.classList.add('hidden');
+  }
 
   document.addEventListener('keydown', onDocumentKeydownEsc);
 };
@@ -69,6 +99,7 @@ const closeBigPicture = () => {
   document.body.classList.remove('modal-open');
 
   document.removeEventListener('keydown', onDocumentKeydownEsc);
+  bigPictureCommentsLoader.removeEventListener('click', onButtonLoadMoreClick);
 };
 
 thumbnailsElement.addEventListener('click', (evt) => {
