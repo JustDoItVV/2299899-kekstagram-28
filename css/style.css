@@ -673,6 +673,13 @@ main {
  * Блок добавления хэштегов и комментария к изображению
  */
 
+.text-help {
+  color: #ffe753;
+  font-family: "Open Sans", "Arial", sans-serif;
+  font-style: italic;
+  font-size: 10px;
+}
+
 .text {
   margin: 0;
   padding: 0;
