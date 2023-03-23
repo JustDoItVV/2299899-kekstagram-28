@@ -187,7 +187,7 @@ form.addEventListener('submit', (evt) => {
 buttonScaleBigger.addEventListener('click', () => {
   const scale = parseInt(scaleInput.value, 10);
   if (scale <= 75) {
-    formImage.style.transform = `scale(0.${scale + 25})`;
+    formImage.style.transform = `scale(${(scale + 25) * 0.01})`;
     scaleInput.value = `${scale + 25}%`;
   }
 });
@@ -195,7 +195,7 @@ buttonScaleBigger.addEventListener('click', () => {
 buttonScaleSmaller.addEventListener('click', () => {
   const scale = parseInt(scaleInput.value, 10);
   if (scale >= 50) {
-    formImage.style.transform = `scale(0.${scale - 25})`;
+    formImage.style.transform = `scale(${(scale - 25) * 0.01})`;
     scaleInput.value = `${scale - 25}%`;
   }
 });
