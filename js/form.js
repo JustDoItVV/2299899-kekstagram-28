@@ -217,7 +217,7 @@ effects.addEventListener('click', (evt) => {
     const effectStart = EFFECTS[effectRadio.value].start;
     const effectStep = EFFECTS[effectRadio.value].step;
     const effectUnits = EFFECTS[effectRadio.value].units;
-    effectInput.value = `${effectMax}${effectUnits}`;
+    effectInput.value = effectMax;
     effectSlider.noUiSlider.updateOptions({
       range: {
         min: effectMin,
@@ -235,9 +235,8 @@ effects.addEventListener('click', (evt) => {
       effectSlider.noUiSlider.on('update', () => {
         if (effectRadio !== 'none') {
           const sliderValue = effectSlider.noUiSlider.get();
-          const inputValue = `${effectFilter}(${sliderValue}${effectUnits})`;
-          effectInput.value = inputValue;
-          formImage.style.filter = inputValue;
+          effectInput.value = sliderValue;
+          formImage.style.filter = `${effectFilter}(${sliderValue}${effectUnits})`;
         }
       });
     }

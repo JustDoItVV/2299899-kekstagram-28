@@ -9,7 +9,9 @@ const Route = {
 const getData = () =>
   fetch(`${BASE_URL}${Route.GET_DATA}`)
     .then((response) => response.json())
-    .catch(() => showAlert('Данные на сервере не найдены или сервер недоступен'));
+    .catch(() =>
+      showAlert('Данные на сервере не найдены или сервер недоступен')
+    );
 
 const sendData = () => {};
 
