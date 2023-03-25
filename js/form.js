@@ -80,8 +80,9 @@ const onDocumentKeydownEsc = (evt) => {
 };
 
 const onInputKeydownEsc = (evt) => {
-  if (isEscapeKey) {
+  if (isEscapeKey(evt)) {
     evt.stopPropagation();
+    evt.target.blur();
   }
 };
 
