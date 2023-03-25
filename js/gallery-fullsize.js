@@ -1,5 +1,7 @@
 import { isEscapeKey } from './util.js';
 
+const COMMENT_COUNT = 5;
+
 const thumbnailsElement = document.querySelector('.pictures');
 const bigPictureSection = document.querySelector('.big-picture');
 const bigPictureClose = bigPictureSection.querySelector('.big-picture__cancel');
@@ -30,7 +32,7 @@ const onButtonLoadMoreClick = () => {
     bigPictureCommentsCounter.querySelector('span').textContent,
     10
   );
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= COMMENT_COUNT; i++) {
     currentComment.classList.remove('hidden');
     currentComment = bigPictureCommentsSection.querySelector('.hidden');
 

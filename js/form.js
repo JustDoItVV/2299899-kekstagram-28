@@ -2,6 +2,12 @@
 /* global noUiSlider:readonly */
 import { isEscapeKey } from './util.js';
 
+const HASHTAG_COUNT = 5;
+const DESCRIPTION_MAX_LENGTH = 140;
+const SCALE_MAX = 100;
+const SCALE_MIN = 25;
+const SCALE_STEP = 25;
+
 const EFFECTS = {
   none: {
     min: 0,
@@ -128,7 +134,7 @@ const hashtagRules = {
   minLength: '<br>хеш-тег не может состоять только из одной решётки',
   maxLength:
     '<br>максимальная длина одного хэш-тега 20 символов, включая решётку',
-  limitAmount: '<br>Не более 5 хэштегов',
+  limitAmount: `<br>Не более ${HASHTAG_COUNT} хэштегов`,
   duplicates: '<br>Хештеги не должны повторяться',
 };
 
@@ -137,16 +143,16 @@ const validateHashtag = (value) => {
   return (
     value === '' ||
     (hashtags.every((hashtag) => hashtag.match(hashtagTemplate)) &&
-      hashtags.length <= 5 &&
+      hashtags.length <= HASHTAG_COUNT &&
       new Set(hashtags).size === hashtags.length)
   );
 };
 
-const validateDescription = (value) => value.length <= 140;
+const validateDescription = (value) => value.length <= DESCRIPTION_MAX_LENGTH;
 
 const getHashtagError = (value) => {
   const hashtags = value.split(' ');
-  if (hashtags.length > 5) {
+  if (hashtags.length > HASHTAG_COUNT) {
     return hashtagRules.limitAmount;
   } else if (new Set(hashtags).size !== hashtags.length) {
     return hashtagRules.duplicates;
@@ -173,7 +179,7 @@ pristine.addValidator(
 pristine.addValidator(
   form.querySelector('.text__description'),
   validateDescription,
-  '<br>Не более 140 символов'
+  `<br>Не более ${DESCRIPTION_MAX_LENGTH} символов`
 );
 
 form.addEventListener('submit', (evt) => {
@@ -186,17 +192,17 @@ form.addEventListener('submit', (evt) => {
 
 buttonScaleBigger.addEventListener('click', () => {
   const scale = parseInt(scaleInput.value, 10);
-  if (scale <= 75) {
-    formImage.style.transform = `scale(${(scale + 25) * 0.01})`;
-    scaleInput.value = `${scale + 25}%`;
+  if (scale + SCALE_STEP <= SCALE_MAX) {
+    formImage.style.transform = `scale(${(scale + SCALE_STEP) * 0.01})`;
+    scaleInput.value = `${scale + SCALE_STEP}%`;
   }
 });
 
 buttonScaleSmaller.addEventListener('click', () => {
   const scale = parseInt(scaleInput.value, 10);
-  if (scale >= 50) {
-    formImage.style.transform = `scale(${(scale - 25) * 0.01})`;
-    scaleInput.value = `${scale - 25}%`;
+  if (scale - SCALE_STEP >= SCALE_MIN) {
+    formImage.style.transform = `scale(${(scale - SCALE_STEP) * 0.01})`;
+    scaleInput.value = `${scale - SCALE_STEP}%`;
   }
 });
 
