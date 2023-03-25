@@ -1,4 +1,3 @@
-import { photoDescriptions } from './data.js';
 import { isEscapeKey } from './util.js';
 
 const thumbnailsElement = document.querySelector('.pictures');
@@ -46,18 +45,19 @@ const onButtonLoadMoreClick = () => {
   }
 };
 
-const openBigPicture = (thumbnail) => {
+const openBigPicture = (thumbnail, data) => {
   document.body.classList.add('modal-open');
   bigPictureSection.classList.remove('hidden');
   bigPictureCommentsLoader.classList.remove('hidden');
 
   const pictureId = thumbnail.getAttribute('data-photo-id');
-  const pictureData = photoDescriptions.find(
+  const pictureData = data.find(
     // eslint-disable-next-line eqeqeq
     (element) => element.id == pictureId
   );
 
   bigPictureImage.src = pictureData.url;
+  bigPictureImage.alt = pictureData.url;
   bigPictureLikesCount.textContent = pictureData.likes;
   bigPictureDescription.textContent = pictureData.description;
   bigPictureCommentsSection.innerHTML = '';
@@ -102,12 +102,16 @@ const closeBigPicture = () => {
   bigPictureCommentsLoader.removeEventListener('click', onButtonLoadMoreClick);
 };
 
-thumbnailsElement.addEventListener('click', (evt) => {
-  const thumbnail = evt.target.closest('.picture');
-  if (thumbnail) {
-    evt.preventDefault();
-    openBigPicture(thumbnail);
-  }
-});
+const thumbnailsAddEventClick = (data) => {
+  thumbnailsElement.addEventListener('click', (evt) => {
+    const thumbnail = evt.target.closest('.picture');
+    if (thumbnail) {
+      evt.preventDefault();
+      openBigPicture(thumbnail, data);
+    }
+  });
+};
 
 bigPictureClose.addEventListener('click', closeBigPicture);
+
+export { thumbnailsAddEventClick };
