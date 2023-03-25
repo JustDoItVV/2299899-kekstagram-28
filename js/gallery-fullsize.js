@@ -104,7 +104,7 @@ const closeBigPicture = () => {
   bigPictureCommentsLoader.removeEventListener('click', onButtonLoadMoreClick);
 };
 
-const thumbnailsAddEventClick = (data) => {
+const setThumbnailsClick = (data) => {
   thumbnailsElement.addEventListener('click', (evt) => {
     const thumbnail = evt.target.closest('.picture');
     if (thumbnail) {
@@ -116,4 +116,4 @@ const thumbnailsAddEventClick = (data) => {
 
 bigPictureClose.addEventListener('click', closeBigPicture);
 
-export { thumbnailsAddEventClick };
+export { setThumbnailsClick };

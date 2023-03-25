@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-redeclare
 /* global noUiSlider:readonly */
+import { sendData } from './api.js';
 import { isEscapeKey } from './util.js';
 
 const HASHTAG_COUNT = 5;
@@ -51,6 +52,10 @@ const EFFECTS = {
     units: '',
   },
 };
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Загружаю...',
+};
 
 const form = document.querySelector('.img-upload__form');
 const formWindow = form.querySelector('.img-upload__overlay');
@@ -65,9 +70,10 @@ const effects = form.querySelector('.effects__list');
 const effectSlider = form.querySelector('.effect-level__slider');
 const effectSliderFieldset = form.querySelector('.img-upload__effect-level');
 const effectInput = form.querySelector('.effect-level__value');
+const submitButton = form.querySelector('#upload-submit');
 
 const onDocumentKeydownEsc = (evt) => {
-  if (isEscapeKey(evt)) {
+  if (isEscapeKey(evt) && !document.querySelector('.error')) {
     evt.preventDefault();
     formWindowClose.click();
   }
@@ -79,11 +85,80 @@ const onInputKeydownEsc = (evt) => {
   }
 };
 
+const onMessageSendSuccessOutsideClickOrEsc = (evt) => {
+  const elementSuccessClose = document.querySelector('.success__button');
+  if (isEscapeKey(evt) || evt.target.matches('.success')) {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+    }
+    elementSuccessClose.click();
+  }
+};
+
+const closeSendSuccess = () => {
+  const elementSuccess = document.querySelector('.success');
+  const elementSuccessClose = elementSuccess.querySelector('.success__button');
+  elementSuccessClose.removeEventListener('click', closeSendSuccess);
+  document.removeEventListener('click', onMessageSendSuccessOutsideClickOrEsc);
+  document.removeEventListener(
+    'keydown',
+    onMessageSendSuccessOutsideClickOrEsc
+  );
+  elementSuccess.remove();
+};
+
+const showSendSuccess = () => {
+  const templateSuccess = document
+    .querySelector('#success')
+    .content.cloneNode(true);
+  document.body.appendChild(templateSuccess);
+
+  const elementSuccess = document.querySelector('.success');
+  const elementSuccessClose = elementSuccess.querySelector('.success__button');
+  elementSuccessClose.addEventListener('click', closeSendSuccess);
+  document.addEventListener('click', onMessageSendSuccessOutsideClickOrEsc);
+  document.addEventListener('keydown', onMessageSendSuccessOutsideClickOrEsc);
+};
+
+const onMessageSendErrorOutsideClickOrEsc = (evt) => {
+  const elementErrorClose = document.querySelector('.error__button');
+  if (isEscapeKey(evt) || evt.target.matches('.error')) {
+    if (isEscapeKey(evt)) {
+      evt.preventDefault();
+    }
+    elementErrorClose.click();
+  }
+};
+
+const closeSendError = () => {
+  const elementError = document.querySelector('.error');
+  const elementErrorClose = elementError.querySelector('.error__button');
+  elementErrorClose.removeEventListener('click', closeSendError);
+  document.removeEventListener('click', onMessageSendErrorOutsideClickOrEsc);
+  document.removeEventListener('keydown', onMessageSendErrorOutsideClickOrEsc);
+  elementError.remove();
+};
+
+const showSendError = () => {
+  const templateError = document
+    .querySelector('#error')
+    .content.cloneNode(true);
+  document.body.appendChild(templateError);
+
+  const elementError = document.querySelector('.error');
+  const elementErrorClose = elementError.querySelector('.error__button');
+  elementErrorClose.addEventListener('click', closeSendError);
+  document.addEventListener('click', onMessageSendErrorOutsideClickOrEsc);
+  document.addEventListener('keydown', onMessageSendErrorOutsideClickOrEsc);
+};
+
 const openLoadForm = () => {
   scaleInput.value = '100%';
   formImage.style.transform = 'scale(1.00)';
   formImage.className = 'effects__preview--none';
   formImage.style.removeProperty('filter');
+  form.querySelector('.text__hashtags').value = '';
+  form.querySelector('.text__description').value = '';
   effectSliderFieldset.classList.add('hidden');
   document.body.classList.add('modal-open');
   formWindow.classList.remove('hidden');
@@ -110,6 +185,7 @@ const openLoadForm = () => {
 };
 
 const closeLoadForm = () => {
+  document.querySelector('#upload-file').value = '';
   document.body.classList.remove('modal-open');
   formWindow.classList.add('hidden');
   document.removeEventListener('keydown', onDocumentKeydownEsc);
@@ -182,14 +258,6 @@ pristine.addValidator(
   `<br>Не более ${DESCRIPTION_MAX_LENGTH} символов`
 );
 
-form.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  const isValid = pristine.validate();
-  if (isValid) {
-    formWindowClose.click();
-  }
-});
-
 buttonScaleBigger.addEventListener('click', () => {
   const scale = parseInt(scaleInput.value, 10);
   if (scale + SCALE_STEP <= SCALE_MAX) {
@@ -242,3 +310,31 @@ effects.addEventListener('click', (evt) => {
     }
   }
 });
+
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
+};
+
+const setFormSubmit = (onSuccess) => {
+  form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(new FormData(evt.target))
+        .then(onSuccess)
+        .catch(() => {
+          showSendError();
+        })
+        .finally(unblockSubmitButton());
+    }
+  });
+};
+
+export { setFormSubmit, closeLoadForm, showSendSuccess };
