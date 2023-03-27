@@ -1,5 +1,6 @@
-import { photoDescriptions } from './data.js';
 import { isEscapeKey } from './util.js';
+
+const COMMENT_COUNT = 5;
 
 const thumbnailsElement = document.querySelector('.pictures');
 const bigPictureSection = document.querySelector('.big-picture');
@@ -31,7 +32,7 @@ const onButtonLoadMoreClick = () => {
     bigPictureCommentsCounter.querySelector('span').textContent,
     10
   );
-  for (let i = 1; i <= 5; i++) {
+  for (let i = 1; i <= COMMENT_COUNT; i++) {
     currentComment.classList.remove('hidden');
     currentComment = bigPictureCommentsSection.querySelector('.hidden');
 
@@ -46,18 +47,19 @@ const onButtonLoadMoreClick = () => {
   }
 };
 
-const openBigPicture = (thumbnail) => {
+const openBigPicture = (thumbnail, data) => {
   document.body.classList.add('modal-open');
   bigPictureSection.classList.remove('hidden');
   bigPictureCommentsLoader.classList.remove('hidden');
 
   const pictureId = thumbnail.getAttribute('data-photo-id');
-  const pictureData = photoDescriptions.find(
+  const pictureData = data.find(
     // eslint-disable-next-line eqeqeq
     (element) => element.id == pictureId
   );
 
   bigPictureImage.src = pictureData.url;
+  bigPictureImage.alt = pictureData.url;
   bigPictureLikesCount.textContent = pictureData.likes;
   bigPictureDescription.textContent = pictureData.description;
   bigPictureCommentsSection.innerHTML = '';
@@ -102,12 +104,16 @@ const closeBigPicture = () => {
   bigPictureCommentsLoader.removeEventListener('click', onButtonLoadMoreClick);
 };
 
-thumbnailsElement.addEventListener('click', (evt) => {
-  const thumbnail = evt.target.closest('.picture');
-  if (thumbnail) {
-    evt.preventDefault();
-    openBigPicture(thumbnail);
-  }
-});
+const setThumbnailsClick = (data) => {
+  thumbnailsElement.addEventListener('click', (evt) => {
+    const thumbnail = evt.target.closest('.picture');
+    if (thumbnail) {
+      evt.preventDefault();
+      openBigPicture(thumbnail, data);
+    }
+  });
+};
 
 bigPictureClose.addEventListener('click', closeBigPicture);
+
+export { setThumbnailsClick };
