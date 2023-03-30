@@ -17,4 +17,17 @@ const showAlert = (message) => {
   document.body.append(alertContainer);
 };
 
-export { isEscapeKey, showAlert };
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+const sortRandom = () => 0.5 - Math.random();
+
+const sortPopular = (photoA, photoB) =>
+  photoB.comments.length - photoA.comments.length;
+
+export { isEscapeKey, showAlert, debounce, sortRandom, sortPopular };
