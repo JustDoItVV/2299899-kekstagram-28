@@ -1,7 +1,6 @@
 const SCALE_MAX = 100;
 const SCALE_MIN = 25;
 const SCALE_STEP = 25;
-
 const EFFECTS = {
   none: {
     min: 0,
@@ -41,7 +40,7 @@ const EFFECTS = {
     filter: 'brightness',
     min: 1,
     max: 3,
-    ste: 0.1,
+    step: 0.1,
     units: '',
   },
 };
@@ -59,11 +58,11 @@ const effectSliderFieldset = form.querySelector('.img-upload__effect-level');
 const createSlider = () => {
   noUiSlider.create(effectSlider, {
     range: {
-      min: 0,
-      max: 1,
+      min: EFFECTS.none.min,
+      max: EFFECTS.none.max,
     },
-    start: 1,
-    step: 0.1,
+    start: EFFECTS.none.max,
+    step: EFFECTS.none.step,
     connect: 'lower',
     format: {
       to: (value) => {
@@ -99,20 +98,15 @@ effects.addEventListener('click', (evt) => {
   if (previewThumbnail) {
     const effectRadio = previewThumbnail.querySelector('input');
     formImage.className = `effects__preview--${effectRadio.value}`;
-    const effectFilter = EFFECTS[effectRadio.value].filter;
-    const effectMin = EFFECTS[effectRadio.value].min;
     const effectMax = EFFECTS[effectRadio.value].max;
-    const effectStart = EFFECTS[effectRadio.value].start;
-    const effectStep = EFFECTS[effectRadio.value].step;
-    const effectUnits = EFFECTS[effectRadio.value].units;
     effectInput.value = effectMax;
     effectSlider.noUiSlider.updateOptions({
       range: {
-        min: effectMin,
+        min: EFFECTS[effectRadio.value].min,
         max: effectMax,
       },
-      start: effectStart,
-      step: effectStep,
+      start: effectMax,
+      step: EFFECTS[effectRadio.value].step,
     });
     effectSlider.noUiSlider.set(effectMax);
     if (effectRadio.value === 'none') {
@@ -124,7 +118,9 @@ effects.addEventListener('click', (evt) => {
         if (effectRadio !== 'none') {
           const sliderValue = effectSlider.noUiSlider.get();
           effectInput.value = sliderValue;
-          formImage.style.filter = `${effectFilter}(${sliderValue}${effectUnits})`;
+          formImage.style.filter = `${
+            EFFECTS[effectRadio.value].filter
+          }(${sliderValue}${EFFECTS[effectRadio.value].units})`;
         }
       });
     }
