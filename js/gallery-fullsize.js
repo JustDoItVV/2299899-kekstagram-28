@@ -2,7 +2,6 @@ import { isEscapeKey } from './util.js';
 
 const COMMENT_COUNT = 5;
 
-const thumbnailsElement = document.querySelector('.pictures');
 const bigPictureSection = document.querySelector('.big-picture');
 const bigPictureClose = bigPictureSection.querySelector('.big-picture__cancel');
 const bigPictureImage = bigPictureSection.querySelector(
@@ -47,17 +46,10 @@ const onButtonLoadMoreClick = () => {
   }
 };
 
-const openBigPicture = (thumbnail, data) => {
+const openBigPicture = (pictureData) => {
   document.body.classList.add('modal-open');
   bigPictureSection.classList.remove('hidden');
   bigPictureCommentsLoader.classList.remove('hidden');
-
-  const pictureId = thumbnail.getAttribute('data-photo-id');
-  const pictureData = data.find(
-    // eslint-disable-next-line eqeqeq
-    (element) => element.id == pictureId
-  );
-
   bigPictureImage.src = pictureData.url;
   bigPictureImage.alt = pictureData.url;
   bigPictureLikesCount.textContent = pictureData.likes;
@@ -104,16 +96,6 @@ const closeBigPicture = () => {
   bigPictureCommentsLoader.removeEventListener('click', onButtonLoadMoreClick);
 };
 
-const setThumbnailsClick = (data) => {
-  thumbnailsElement.addEventListener('click', (evt) => {
-    const thumbnail = evt.target.closest('.picture');
-    if (thumbnail) {
-      evt.preventDefault();
-      openBigPicture(thumbnail, data);
-    }
-  });
-};
-
 bigPictureClose.addEventListener('click', closeBigPicture);
 
-export { setThumbnailsClick };
+export { openBigPicture };
