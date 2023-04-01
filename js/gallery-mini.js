@@ -3,9 +3,9 @@ import { openBigPicture } from './gallery-fullsize.js';
 import { debounce } from './util.js';
 
 const filters = {
-  'По умолчанию': (array) => array.slice(),
-  Случайные: (array) => array.slice().sort(sortRandom).slice(0, 10),
-  Обсуждаемые: (array) => array.slice().sort(sortPopular),
+  'filter-default': (array) => array.slice(),
+  'filter-random': (array) => array.slice().sort(sortRandom).slice(0, 10),
+  'filter-discussed': (array) => array.slice().sort(sortPopular),
 };
 
 let serverData;
@@ -68,7 +68,7 @@ const setOnFiltersClick = (data, callback) => {
       }
       activeButton.classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
-      const filterName = evt.target.textContent;
+      const filterName = evt.target.id;
       callback(filters[filterName](data));
       setOnThumbnailsClick();
     }
