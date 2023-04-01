@@ -10,51 +10,46 @@ const onMessageClickOrEscape = (messageType) => (evt) => {
   }
 };
 
-const onMessageHandlerSuccess = onMessageClickOrEscape('success');
-const onMessageHandlerError = onMessageClickOrEscape('error');
-
-const closeSendSuccess = () => {
-  const elementSuccess = document.querySelector('.success');
-  const elementSuccessClose = elementSuccess.querySelector('.success__button');
-  elementSuccessClose.removeEventListener('click', closeSendSuccess);
-  document.removeEventListener('click', onMessageHandlerSuccess);
-  document.removeEventListener('keydown', onMessageHandlerSuccess);
-  elementSuccess.remove();
+const ClickKeyHandlers = {
+  onSuccess: onMessageClickOrEscape('success'),
+  onError: onMessageClickOrEscape('error'),
 };
 
-const closeSendError = () => {
-  const elementError = document.querySelector('.error');
-  const elementErrorClose = elementError.querySelector('.error__button');
-  elementErrorClose.removeEventListener('click', closeSendError);
-  document.removeEventListener('click', onMessageHandlerError);
-  document.removeEventListener('keydown', onMessageHandlerError);
-  elementError.remove();
+const closeSendMessage = (messageType, handler) => () => {
+  const element = document.querySelector(`.${messageType}`);
+  const elementClose = element.querySelector(`.${messageType}__button`);
+  elementClose.removeEventListener('click', closeSendMessage);
+  document.removeEventListener('click', handler);
+  document.removeEventListener('keydown', handler);
+  element.remove();
 };
 
-const showSendSuccess = () => {
-  const templateSuccess = document
-    .querySelector('#success')
+const CloseHandlers = {
+  onSuccess: closeSendMessage('success', ClickKeyHandlers.onSuccess),
+  onError: closeSendMessage('error', ClickKeyHandlers.onError),
+};
+
+const showSendMessage = (messageType, handlerClose, handlerOn) => () => {
+  const template = document
+    .querySelector(`#${messageType}`)
     .content.cloneNode(true);
-  document.body.appendChild(templateSuccess);
-
-  const elementSuccess = document.querySelector('.success');
-  const elementSuccessClose = elementSuccess.querySelector('.success__button');
-  elementSuccessClose.addEventListener('click', closeSendSuccess);
-  document.addEventListener('click', onMessageHandlerSuccess);
-  document.addEventListener('keydown', onMessageHandlerSuccess);
+  document.body.appendChild(template);
+  const element = document.querySelector(`.${messageType}`);
+  const elementClose = element.querySelector(`.${messageType}__button`);
+  elementClose.addEventListener('click', handlerClose);
+  document.addEventListener('click', handlerOn);
+  document.addEventListener('keydown', handlerOn);
 };
 
-const showSendError = () => {
-  const templateError = document
-    .querySelector('#error')
-    .content.cloneNode(true);
-  document.body.appendChild(templateError);
-
-  const elementError = document.querySelector('.error');
-  const elementErrorClose = elementError.querySelector('.error__button');
-  elementErrorClose.addEventListener('click', closeSendError);
-  document.addEventListener('click', onMessageHandlerError);
-  document.addEventListener('keydown', onMessageHandlerError);
-};
+const showSendSuccess = showSendMessage(
+  'success',
+  CloseHandlers.onSuccess,
+  ClickKeyHandlers.onSuccess
+);
+const showSendError = showSendMessage(
+  'error',
+  CloseHandlers.onError,
+  ClickKeyHandlers.onError
+);
 
 export { showSendError, showSendSuccess };
