@@ -2,10 +2,10 @@ import { sortRandom, sortPopular } from './util.js';
 import { openBigPicture } from './gallery-fullsize.js';
 import { debounce } from './util.js';
 
-const filters = {
-  'По умолчанию': (array) => array.slice(),
-  Случайные: (array) => array.slice().sort(sortRandom).slice(0, 10),
-  Обсуждаемые: (array) => array.slice().sort(sortPopular),
+const Filters = {
+  'filter-default': (array) => array.slice(),
+  'filter-random': (array) => array.slice().sort(sortRandom).slice(0, 10),
+  'filter-discussed': (array) => array.slice().sort(sortPopular),
 };
 
 let serverData;
@@ -24,16 +24,13 @@ const renderThumbnails = (photoData) => {
   clearThumbnails();
   photoData.forEach((photo) => {
     const thumbnail = thumbnailsTemplate.cloneNode(true);
-
     thumbnail.querySelector('.picture__img').src = photo.url;
     thumbnail.querySelector('.picture__likes').textContent = photo.likes;
     thumbnail.querySelector('.picture__comments').textContent =
       photo.comments.length;
     thumbnail.querySelector('.picture').setAttribute('data-photo-id', photo.id);
-
     thumbnailsFragment.appendChild(thumbnail);
   });
-
   thumbnailsElement.appendChild(thumbnailsFragment);
 };
 
@@ -43,8 +40,7 @@ const onThumbnailsClick = (evt) => {
     evt.preventDefault();
     const pictureId = thumbnail.getAttribute('data-photo-id');
     const pictureData = serverData.find(
-      // eslint-disable-next-line eqeqeq
-      (element) => element.id == pictureId
+      (element) => element.id === Number(pictureId)
     );
     openBigPicture(pictureData);
   }
@@ -68,8 +64,8 @@ const setOnFiltersClick = (data, callback) => {
       }
       activeButton.classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
-      const filterName = evt.target.textContent;
-      callback(filters[filterName](data));
+      const filterName = evt.target.id;
+      callback(Filters[filterName](data));
       setOnThumbnailsClick();
     }
   });

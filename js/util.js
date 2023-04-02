@@ -1,3 +1,5 @@
+const DEBOUNCE_TIMEOUT = 500;
+
 const isEscapeKey = (evt) => evt.key === 'Escape';
 
 const showAlert = (message) => {
@@ -11,13 +13,11 @@ const showAlert = (message) => {
   alertContainer.style.fontSize = '20px';
   alertContainer.style.textAlign = 'center';
   alertContainer.style.backgroundColor = 'red';
-
   alertContainer.textContent = message;
-
   document.body.append(alertContainer);
 };
 
-const debounce = (callback, timeoutDelay = 500) => {
+const debounce = (callback, timeoutDelay = DEBOUNCE_TIMEOUT) => {
   let timeoutId;
   return (...rest) => {
     clearTimeout(timeoutId);

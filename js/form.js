@@ -18,6 +18,12 @@ const formTextFieldset = form.querySelector('.img-upload__text');
 const scaleInput = form.querySelector('.scale__control--value');
 const formImage = form.querySelector('.img-upload__preview img');
 const submitButton = form.querySelector('#upload-submit');
+const fileField = document.querySelector('#upload-file');
+
+fileField.addEventListener('change', () => {
+  const file = fileField.files[0];
+  formImage.src = URL.createObjectURL(file);
+});
 
 const onDocumentKeydownEsc = (evt) => {
   if (isEscapeKey(evt) && !document.querySelector('.error')) {
