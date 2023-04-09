@@ -53,16 +53,16 @@ const setOnThumbnailsClick = () => {
 const setOnFiltersClick = (data, callback) => {
   filtersElement.addEventListener('click', (evt) => {
     if (evt.target.matches('.img-filters__button')) {
-      const activeButton = filtersElement.querySelector(
+      const activeFilterButton = filtersElement.querySelector(
         '.img-filters__button--active'
       );
       if (
-        activeButton.textContent === evt.target.textContent &&
-        activeButton.textContent !== 'Случайные'
+        activeFilterButton.textContent === evt.target.textContent &&
+        activeFilterButton.textContent !== 'Случайные'
       ) {
         return;
       }
-      activeButton.classList.remove('img-filters__button--active');
+      activeFilterButton.classList.remove('img-filters__button--active');
       evt.target.classList.add('img-filters__button--active');
       const filterName = evt.target.id;
       callback(Filters[filterName](data));
