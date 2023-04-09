@@ -12,8 +12,11 @@ const bigPictureDescription =
   bigPictureSection.querySelector('.social__caption');
 const bigPictureCommentsSection =
   bigPictureSection.querySelector('.social__comments');
-const bigPictureCommentsCounter = bigPictureSection.querySelector(
-  '.social__comment-count'
+const bigPictureCommentsCounterShown = bigPictureSection.querySelector(
+  '.comments-count-shown'
+);
+const bigPictureCommentsCounterAll = bigPictureSection.querySelector(
+  '.comments-count-all'
 );
 const bigPictureCommentsLoader =
   bigPictureSection.querySelector('.comments-loader');
@@ -28,16 +31,15 @@ const onDocumentKeydownEsc = (evt) => {
 const onButtonLoadMoreClick = () => {
   let currentComment = bigPictureCommentsSection.querySelector('.hidden');
   let currentCommentNumber = parseInt(
-    bigPictureCommentsCounter.querySelector('span').textContent,
+    bigPictureCommentsCounterShown.textContent,
     10
   );
   for (let i = 1; i <= COMMENT_COUNT; i++) {
     currentComment.classList.remove('hidden');
     currentComment = bigPictureCommentsSection.querySelector('.hidden');
 
-    const counterSpan = bigPictureCommentsCounter.querySelector('span');
     currentCommentNumber += 1;
-    counterSpan.textContent = currentCommentNumber;
+    bigPictureCommentsCounterShown.textContent = currentCommentNumber;
 
     if (!currentComment) {
       bigPictureCommentsLoader.classList.add('hidden');
@@ -55,13 +57,9 @@ const openBigPicture = (pictureData) => {
   bigPictureLikesCount.textContent = pictureData.likes;
   bigPictureDescription.textContent = pictureData.description;
   bigPictureCommentsSection.innerHTML = '';
-  const commentsAmount = pictureData.comments.length;
-  if (commentsAmount !== 0) {
-    bigPictureCommentsCounter.innerHTML = `
-      <span>0</span>
-      из
-      <span class="comments-count">${commentsAmount}</span>
-      комментариев`;
+  bigPictureCommentsCounterShown.textContent = 0;
+  bigPictureCommentsCounterAll.textContent = pictureData.comments.length;
+  if (pictureData.comments.length !== 0) {
     pictureData.comments.forEach((comment) =>
       bigPictureCommentsSection.insertAdjacentHTML(
         'beforeend',
@@ -81,7 +79,6 @@ const openBigPicture = (pictureData) => {
     bigPictureCommentsLoader.addEventListener('click', onButtonLoadMoreClick);
     bigPictureCommentsLoader.click();
   } else {
-    bigPictureCommentsCounter.innerHTML = 'Нет комментариев';
     bigPictureCommentsLoader.classList.add('hidden');
   }
 
