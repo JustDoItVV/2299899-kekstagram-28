@@ -60,7 +60,7 @@ const openBigPicture = (pictureData) => {
   bigPictureCommentsCounterShown.textContent = 0;
   bigPictureCommentsCounterAll.textContent = pictureData.comments.length;
   if (pictureData.comments.length !== 0) {
-    pictureData.comments.forEach((comment) =>
+    pictureData.comments.forEach((comment) => {
       bigPictureCommentsSection.insertAdjacentHTML(
         'beforeend',
         `
@@ -71,11 +71,14 @@ const openBigPicture = (pictureData) => {
             alt="${comment.name}"
             width="35" height="35"
           >
-          <p class="social__text">${comment.message}</p>
+          <p class="social__text"></p>
         </li>
       `
-      )
-    );
+      );
+      const lastComment =
+        bigPictureCommentsSection.querySelector('li:last-child p');
+      lastComment.textContent = comment.message;
+    });
     bigPictureCommentsLoader.addEventListener('click', onButtonLoadMoreClick);
     bigPictureCommentsLoader.click();
   } else {
