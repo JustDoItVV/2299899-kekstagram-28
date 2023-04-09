@@ -5,6 +5,7 @@ import { isEscapeKey } from './util.js';
 
 const HASHTAG_COUNT = 5;
 const DESCRIPTION_MAX_LENGTH = 140;
+const HASHTAG_TEMPLATE = /^#[a-zа-яё0-9]{1,19}$/i;
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
   SENDING: 'Загружаю...',
@@ -70,7 +71,6 @@ const pristine = new Pristine(form, {
   errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'span',
 });
-const hashtagTemplate = /^#[a-zа-яё0-9]{1,19}$/i;
 const hashtagRules = {
   startSymbol: '<br>хэш-тег должен начинанаться с символа #',
   allowedSymbols: `<br>Строка после решётки должна состоять из букв и чисел и не может
@@ -87,7 +87,7 @@ const validateHashtag = (value) => {
   const hashtags = value.toLowerCase().split(' ');
   return (
     value === '' ||
-    (hashtags.every((hashtag) => hashtag.match(hashtagTemplate)) &&
+    (hashtags.every((hashtag) => hashtag.match(HASHTAG_TEMPLATE)) &&
       hashtags.length <= HASHTAG_COUNT &&
       new Set(hashtags).size === hashtags.length)
   );
@@ -104,7 +104,7 @@ const getHashtagError = (value) => {
   }
 
   const wrongHashtag = hashtags.find(
-    (hashtag) => !hashtag.match(hashtagTemplate)
+    (hashtag) => !hashtag.match(HASHTAG_TEMPLATE)
   );
   if (wrongHashtag[0] !== '#') {
     return hashtagRules.startSymbol;
