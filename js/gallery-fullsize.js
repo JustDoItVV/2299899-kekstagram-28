@@ -48,14 +48,7 @@ const onButtonLoadMoreClick = () => {
   }
 };
 
-const openBigPicture = (pictureData) => {
-  document.body.classList.add('modal-open');
-  bigPictureSection.classList.remove('hidden');
-  bigPictureCommentsLoader.classList.remove('hidden');
-  bigPictureImage.src = pictureData.url;
-  bigPictureImage.alt = pictureData.url;
-  bigPictureLikesCount.textContent = pictureData.likes;
-  bigPictureDescription.textContent = pictureData.description;
+const renderComments = (pictureData) => {
   bigPictureCommentsSection.innerHTML = '';
   bigPictureCommentsCounterShown.textContent = 0;
   bigPictureCommentsCounterAll.textContent = pictureData.comments.length;
@@ -84,14 +77,23 @@ const openBigPicture = (pictureData) => {
   } else {
     bigPictureCommentsLoader.classList.add('hidden');
   }
+};
 
+const openBigPicture = (pictureData) => {
+  document.body.classList.add('modal-open');
+  bigPictureSection.classList.remove('hidden');
+  bigPictureCommentsLoader.classList.remove('hidden');
+  bigPictureImage.src = pictureData.url;
+  bigPictureImage.alt = pictureData.url;
+  bigPictureLikesCount.textContent = pictureData.likes;
+  bigPictureDescription.textContent = pictureData.description;
+  renderComments(pictureData);
   document.addEventListener('keydown', onDocumentKeydownEsc);
 };
 
 const closeBigPicture = () => {
   bigPictureSection.classList.add('hidden');
   document.body.classList.remove('modal-open');
-
   document.removeEventListener('keydown', onDocumentKeydownEsc);
   bigPictureCommentsLoader.removeEventListener('click', onButtonLoadMoreClick);
 };
