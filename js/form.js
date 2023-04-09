@@ -84,7 +84,7 @@ const hashtagRules = {
 };
 
 const validateHashtag = (value) => {
-  const hashtags = value.split(' ');
+  const hashtags = value.toLowerCase().split(' ');
   return (
     value === '' ||
     (hashtags.every((hashtag) => hashtag.match(hashtagTemplate)) &&
@@ -96,7 +96,7 @@ const validateHashtag = (value) => {
 const validateDescription = (value) => value.length <= DESCRIPTION_MAX_LENGTH;
 
 const getHashtagError = (value) => {
-  const hashtags = value.split(' ');
+  const hashtags = value.toLowerCase().split(' ');
   if (hashtags.length > HASHTAG_COUNT) {
     return hashtagRules.limitAmount;
   } else if (new Set(hashtags).size !== hashtags.length) {
